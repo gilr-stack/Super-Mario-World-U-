@@ -16,7 +16,10 @@
     <script>
         window.EJS_player = '#game';
         window.EJS_core = 'snes'; 
-        window.EJS_gameUrl = 'SuperMarioWorldBR.smc'; 
+        
+        // O "./" garante que ele procure o jogo exatamente dentro da pasta do link
+        window.EJS_gameUrl = './SuperMarioWorldBR.smc'; 
+        
         window.EJS_pathtodata = 'https://emulatorjs.org';
     </script>
     <script src="https://emulatorjs.orgloader.js"></script>
