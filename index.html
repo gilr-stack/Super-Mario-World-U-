@@ -27,10 +27,13 @@
         // Configurações do EmulatorJS
         EJS_player = "#game-container";
         EJS_core = "snes";
-        EJS_pathtodata = "https://cdn.emulatorjs.org/stable/data/";
-        EJS_gameUrl = "https://jsdelivr.net";
+        EJS_pathtodata = "https://emulatorjs.org";
+        
+        // SOLUÇÃO: Como a ROM está no mesmo servidor do GitHub Pages, 
+        // basta colocar o nome do arquivo diretamente (caminho relativo)!
+        EJS_gameUrl = "SuperMarioWorldBR.smc"; 
     </script>
-    <script src="https://cdn.emulatorjs.org/stable/data/loader.js"></script>
+    <script src="https://emulatorjs.orgloader.js"></script>
 
 </body>
 </html>
