@@ -1,22 +1,36 @@
-<html>
-    <head>
-        <style>
-            body, html {
-                margin: 0;
-                padding: 0;
-            }
-        </style>
-    </head>
-    <body>
-        <div style="width:100%;height:100%;max-width:100%">
-            <div id="game"></div>
-        </div>
-        <script>
-            EJS_player = "#game";
-            EJS_core = "snes";
-            EJS_pathtodata = "https://cdn.emulatorjs.org/stable/data/";
-            EJS_gameUrl = "https://github.com/gilr-stack/Super-Mario-World-U-/raw/refs/heads/main/SuperMarioWorldBR.smc";
-        </script>
-        <script src="https://cdn.emulatorjs.org/stable/data/loader.js"></script>
-    </body>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super Mario World - EmulatorJS</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #000;
+        }
+        #game-container {
+            width: 100vw;
+            height: 100vh;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="game-container"></div>
+
+    <script>
+        // Configurações do EmulatorJS
+        EJS_player = "#game-container";
+        EJS_core = "snes";
+        EJS_pathtodata = "https://cdn.emulatorjs.org/stable/data/";
+        EJS_gameUrl = "https://githubusercontent.com";
+    </script>
+    <script src="https://cdn.emulatorjs.org/stable/data/loader.js"></script>
+
+</body>
 </html>
