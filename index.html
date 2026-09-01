@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jogar SNES Online</title>
+    <title>Jogar Super Mario World BR</title>
     <style>
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000; }
         #game { width: 100%; height: 100%; }
@@ -14,16 +14,12 @@
     <div id="game"></div>
 
     <script>
-        // CONFIGURAÇÃO DO EMULADOR DE SNES
-        // MUDE APENAS O TEXTO ENTRE ASPAS ABAIXO para o nome exato do seu arquivo no GitHub (ex: "mario.sfc" ou "topgear.smc")
-        const NOME_DO_ARQUIVO_DO_JOGO = "seu_jogo.sfc"; 
-
         window.EJS_player = '#game';
-        window.EJS_core = 'snes'; // Define o emulador como Super Nintendo
-        window.EJS_gameUrl = "Super Mario World (U) [T+Por].smc"; 
-        window.EJS_pathtodata = 'https://jsdelivr.net';
+        window.EJS_core = 'snes'; 
+        window.EJS_gameUrl = 'SuperMarioWorldBR.smc'; 
+        window.EJS_pathtodata = 'https://emulatorjs.org';
     </script>
-    <script src="https://jsdelivr.netloader.js"></script>
+    <script src="https://emulatorjs.orgloader.js"></script>
 
 </body>
 </html>
