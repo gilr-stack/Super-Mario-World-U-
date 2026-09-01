@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogar Online</title>
+    <style>
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000; }
+        #game { width: 100%; height: 100%; }
+    </style>
+</head>
+<body>
+
+    <div id="game"></div>
+
+    <script>
+        // CONFIGURAÇÃO DO EMULADOR
+        // Substitua 'NOME_DO_SEU_ARQUIVO.gba' pelo nome exato da sua ROM que está no repositório
+        const ROM_FILE = 'Super Mario World (U) [T+Por]'; 
+        
+        // Identifica o console pela extensão do arquivo automaticamente
+        const extension = ROM_FILE.split('.').pop().toLowerCase();
+        const coreMap = { 'gba': 'gba', 'gbc': 'gbc', 'gb': 'gb', 'nes': 'nes', 'snes': 'snes', 'smc': 'snes', 'gen': 'segaMD', 'md': 'segaMD' };
+        const system = coreMap[extension] || 'gba';
+
+        window.EJS_player = '#game';
+        window.EJS_core = system;
+        window.EJS_gameUrl = ROM_FILE; 
+        window.EJS_pathtodata = 'https://jsdelivr.net';
+    </script>
+    <script src="https://jsdelivr.netloader.js"></script>
+
+</body>
+</html>
