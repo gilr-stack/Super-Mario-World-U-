@@ -3,20 +3,20 @@
 <html lang="pt-BR">
 
 <head>
+
     <meta charset="UTF-8">
 
-    <!-- Melhor configuração para celulares -->
     <meta name="viewport"
         content="width=device-width,
-                 initial-scale=1.0,
-                 maximum-scale=1.0,
-                 user-scalable=no,
-                 viewport-fit=cover">
+        initial-scale=1.0,
+        maximum-scale=1.0,
+        user-scalable=no,
+        viewport-fit=cover">
 
     <title>Super Mario World</title>
 
     <style>
-        /* Remove margens e barras de rolagem */
+
         html,
         body {
             margin: 0;
@@ -26,133 +26,238 @@
             overflow: hidden;
             background: #000;
             touch-action: none;
+            overscroll-behavior: none;
             -webkit-user-select: none;
             user-select: none;
         }
 
-        /* Área do EmulatorJS */
         #game {
+            position: fixed;
+            inset: 0;
             width: 100vw;
             height: 100vh;
             height: 100dvh;
-            position: fixed;
-            inset: 0;
             background: #000;
         }
 
-        /* Canvas do jogo */
         canvas {
             image-rendering: pixelated;
             image-rendering: crisp-edges;
         }
 
-        /* Evita seleção e zoom acidental no celular */
         * {
             -webkit-tap-highlight-color: transparent;
         }
+
+        /*
+         * Tela inicial para liberar o áudio
+         */
+        #startScreen {
+
+            position: fixed;
+            inset: 0;
+
+            z-index: 999999;
+
+            background: #000;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            flex-direction: column;
+
+            color: white;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            text-align: center;
+
+            cursor: pointer;
+        }
+
+        #startScreen h1 {
+
+            font-size: 28px;
+
+            margin: 0 0 20px 0;
+
+        }
+
+        #startButton {
+
+            background: #0064ff;
+
+            border: none;
+
+            color: white;
+
+            padding: 16px 35px;
+
+            border-radius: 10px;
+
+            font-size: 20px;
+
+            font-weight: bold;
+
+            box-shadow:
+                0 4px 15px
+                rgba(0, 100, 255, 0.4);
+
+        }
+
+        #startScreen p {
+
+            font-size: 14px;
+
+            opacity: 0.7;
+
+            margin-top: 15px;
+
+        }
+
     </style>
+
 </head>
+
 
 <body>
 
+
+    <!--
+         Tela inicial.
+         O primeiro toque do usuário será utilizado
+         para liberar o áudio do navegador.
+    -->
+
+    <div id="startScreen">
+
+        <h1>Super Mario World</h1>
+
+        <button id="startButton">
+            ▶ TOQUE PARA JOGAR
+        </button>
+
+        <p>
+            Toque para iniciar o jogo com áudio
+        </p>
+
+    </div>
+
+
+    <!-- EmulatorJS -->
+
     <div id="game"></div>
 
+
     <script>
+
         /*
          * ==========================================
-         *        CONFIGURAÇÃO EMULATORJS
+         *          EMULATORJS
          * ==========================================
          */
 
-        // Local onde o EmulatorJS será exibido
         EJS_player = "#game";
 
-        // Core do Super Nintendo
         EJS_core = "snes";
 
-        // Cor da interface
         EJS_color = "#0064ff";
 
-        // Arquivos do EmulatorJS
         EJS_pathtodata =
             "https://cdn.emulatorjs.org/stable/data/";
 
-        // Sua ROM
-        EJS_gameUrl = "SupeeMarioWorldBR.smc";
+        EJS_gameUrl =
+            "SupeeMarioWorldBR.smc";
 
 
         /*
          * ==========================================
-         *          CONFIGURAÇÕES MOBILE
+         *              CONTROLES
          * ==========================================
          */
 
-        // Ativa controles virtuais para celulares
         EJS_VirtualGamepad = true;
 
-        // Inicia o jogo assim que estiver carregado
-        EJS_startOnLoaded = true;
 
         /*
-         * Tentativa de utilizar WebAudio.
-         * Normalmente oferece melhor compatibilidade
-         * de áudio em navegadores modernos.
+         * ==========================================
+         *                ÁUDIO
+         * ==========================================
          */
+
         EJS_audio = true;
 
 
         /*
-         * ==========================================
-         *              DESEMPENHO
-         * ==========================================
+         * Não iniciar automaticamente.
+         *
+         * O jogo será iniciado depois que o usuário
+         * tocar no botão.
          */
 
+        EJS_startOnLoaded = false;
+
+
         /*
-         * Evita recursos gráficos pesados.
-         * Para SNES não precisamos de filtros ou shaders.
+         * ==========================================
+         *              PERFORMANCE
+         * ==========================================
          */
 
         EJS_defaultOptions = {
+
             "video_driver": "gl",
+
             "audio_driver": "webaudio"
+
         };
 
 
         /*
          * ==========================================
-         *       AJUSTES ESPECÍFICOS DO NAVEGADOR
+         *        DETECÇÃO DO DISPOSITIVO
          * ==========================================
          */
 
-        // Detecta dispositivos móveis
         const isMobile =
             /Android|iPhone|iPad|iPod/i.test(
                 navigator.userAgent
             );
 
-        if (isMobile) {
-
-            /*
-             * Mantém o processamento gráfico simples.
-             * Isso ajuda principalmente em celulares
-             * de entrada.
-             */
-
-            document.documentElement.style.touchAction = "none";
-            document.body.style.touchAction = "none";
-        }
-
 
         /*
          * ==========================================
-         *       LIBERAÇÃO DO ÁUDIO NO PRIMEIRO TOQUE
+         *        LIBERAR ÁUDIO DO NAVEGADOR
          * ==========================================
-         *
-         * Navegadores móveis podem bloquear áudio
-         * até que o usuário toque na página.
          */
 
-        function liberarAudio() {
+        const startScreen =
+            document.getElementById(
+                "startScreen"
+            );
+
+        const startButton =
+            document.getElementById(
+                "startButton"
+            );
+
+
+        async function iniciarJogo() {
+
+            /*
+             * O ponto mais importante:
+             *
+             * Esta função é executada diretamente
+             * como consequência do toque do usuário.
+             *
+             * Isso permite que navegadores móveis
+             * liberem o áudio.
+             */
 
             try {
 
@@ -162,55 +267,149 @@
 
                 if (AudioContext) {
 
-                    const audioContext =
+                    const audio =
                         new AudioContext();
 
-                    if (audioContext.state === "suspended") {
-                        audioContext.resume();
+                    if (
+                        audio.state ===
+                        "suspended"
+                    ) {
+
+                        await audio.resume();
+
                     }
+
+                    /*
+                     * Cria um pequeno buffer silencioso.
+                     *
+                     * Alguns navegadores móveis
+                     * precisam de reprodução real
+                     * para liberar o áudio.
+                     */
+
+                    const buffer =
+                        audio.createBuffer(
+                            1,
+                            1,
+                            22050
+                        );
+
+                    const source =
+                        audio.createBufferSource();
+
+                    source.buffer = buffer;
+
+                    source.connect(
+                        audio.destination
+                    );
+
+                    source.start(0);
+
                 }
 
-            } catch (e) {
+            } catch (erro) {
+
                 console.log(
-                    "Áudio aguardando inicialização."
+                    "Não foi possível inicializar o áudio:",
+                    erro
                 );
+
             }
 
-            // Remove os eventos depois do primeiro toque
-            document.removeEventListener(
-                "touchstart",
-                liberarAudio
-            );
 
-            document.removeEventListener(
-                "click",
-                liberarAudio
-            );
+            /*
+             * Remove a tela inicial
+             */
+
+            startScreen.style.display =
+                "none";
+
+
+            /*
+             * Dá um pequeno intervalo para
+             * o navegador terminar a inicialização
+             */
+
+            setTimeout(function () {
+
+                /*
+                 * Caso o EmulatorJS já esteja
+                 * carregado, tenta iniciar.
+                 */
+
+                if (
+                    typeof EJS_start !==
+                    "undefined"
+                ) {
+
+                    try {
+
+                        EJS_start();
+
+                    } catch (e) {
+
+                        console.log(
+                            "EmulatorJS já está inicializando."
+                        );
+
+                    }
+
+                }
+
+            }, 100);
+
         }
 
 
         /*
-         * O navegador libera o áudio depois
-         * da primeira interação do usuário.
+         * O evento precisa ser diretamente
+         * associado ao toque.
          */
 
-        document.addEventListener(
+        startButton.addEventListener(
             "touchstart",
-            liberarAudio,
-            { once: true }
+            function (event) {
+
+                event.preventDefault();
+
+                iniciarJogo();
+
+            },
+            {
+                passive: false,
+                once: true
+            }
         );
 
-        document.addEventListener(
+
+        /*
+         * Compatibilidade com navegador
+         * que não utiliza touchstart.
+         */
+
+        startButton.addEventListener(
             "click",
-            liberarAudio,
-            { once: true }
+            function (event) {
+
+                event.preventDefault();
+
+                iniciarJogo();
+
+            },
+            {
+                once: true
+            }
         );
 
     </script>
 
 
-    <!-- EmulatorJS -->
+    <!--
+         EmulatorJS
+    -->
+
     <script src="https://cdn.emulatorjs.org/stable/data/loader.js"></script>
+
 
 </body>
 
